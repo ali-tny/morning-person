@@ -1,4 +1,5 @@
-# morning-person
+morning-person
+==============
 
 Scripts to run on my raspberry pi to handle recording, processing, and posting
 content for [morning-person](http://morningperson.co.uk).
