@@ -14,8 +14,8 @@ def get_tune(db_path, is_christmas):
         url, name, artist_name
     FROM songs
     WHERE
-        DATE(last_played_date) < DATE('{}')
-        OR last_payed_date IS NULL
+        (DATE(last_played_date) < DATE('{}')
+        OR last_payed_date IS NULL)
         {}
     ORDER BY RANDOM()
     LIMIT 1;
