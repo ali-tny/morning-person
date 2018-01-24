@@ -3,9 +3,10 @@ from datetime import datetime
 import numpy as np
 import cv2
 import imageio
+import moviepy.editor as mpy
 import imutils
 
-def process_video(video_fp, gif_fp):
+def process_video(video_fp, gif_fp, proc_vid_fp):
     logging.info('Processing...')
     cap = cv2.VideoCapture(video_fp)
     grays = []
@@ -95,6 +96,9 @@ def process_video(video_fp, gif_fp):
                if i % reduce_factor == 0]
     imageio.mimsave(gif_fp, smaller, fps=np.floor(23 / reduce_factor), 
                     subrectangles=True)
+
+    clip = mpy.VideoFileClip(gif_fp)
+    clip.write_videofile(proc_vid_fp)
 
     logging.info('Process outputs - awakeness:{} happiness:{}'.format(
         happiness,

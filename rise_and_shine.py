@@ -37,12 +37,12 @@ if not args.debug:
 if not args.debug:
     be_patient(min=30, max=60*2.5)
 
-vid_fp, gif_fp = record()
+vid_fp, gif_fp, proc_vid_fp = record()
 
-awakeness, happiness = process_video(vid_fp, gif_fp) 
+awakeness, happiness = process_video(vid_fp, gif_fp, proc_vid_fp) 
 
 process_metrics = (awakeness, happiness)
 song_info = (artist, name, url)
-upload(process_metrics, song_info, gif_fp, create_endpoint, token)
+upload(process_metrics, song_info, proc_vid_fp, create_endpoint, token)
 
 logging.info('C\'est finit!')
