@@ -101,8 +101,8 @@ def process_video(video_fp, gif_fp, proc_vid_fp):
     clip.write_videofile(proc_vid_fp)
 
     logging.info('Process outputs - awakeness:{} happiness:{}'.format(
-        happiness,
-        awakeness
+        awakeness,
+        happiness
     ))
 
     return awakeness, happiness
