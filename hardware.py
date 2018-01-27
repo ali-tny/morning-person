@@ -5,7 +5,7 @@ from datetime import datetime
 def play_tune(url):
     logging.info('Playing song')
     func_fp = get_bash_functions_path()
-    play_song = '/bin/bash -c "source {}; youtube {}"'.format(func_fp, song_url)
+    play_song = '/bin/bash -c "source {}; youtube {}"'.format(func_fp, url)
     os.system(play_song + ' &')
 
 def record():
