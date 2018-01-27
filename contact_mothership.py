@@ -25,7 +25,7 @@ def upload(process_metrics, song_info, proc_vid_fp, create_endpoint, token):
         'video_url':video_url
     }
     headers = {
-        "Authorization":token
+        "Authorization":"Token {}".format(token)
     }
 
     try:
