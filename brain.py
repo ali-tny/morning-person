@@ -1,12 +1,13 @@
 import logging
 from datetime import datetime
+import os
 import numpy as np
 import cv2
 import imageio
 import moviepy.editor as mpy
 import imutils
 
-def process_video(video_fp, gif_fp, proc_vid_fp):
+def process_video(video_fp, gif_fp, proc_vid_chrome_fp, proc_vid_safari_fp):
     logging.info('Processing...')
     cap = cv2.VideoCapture(video_fp)
     grays = []
@@ -90,15 +91,14 @@ def process_video(video_fp, gif_fp, proc_vid_fp):
     awakeness = awake / len(processed)
     happiness = movement_size / ((600 ** 2)*len(processed))
 
-    imageio.mimsave(gif_fp, processed)
     reduce_factor = 3
     smaller = [frame for i, frame in enumerate(processed) 
                if i % reduce_factor == 0]
     imageio.mimsave(gif_fp, smaller, fps=np.floor(23 / reduce_factor), 
                     subrectangles=True)
 
-    clip = mpy.VideoFileClip(gif_fp)
-    clip.write_videofile(proc_vid_fp)
+    convert(gif_fp, proc_vid_chrome_fp, 'libx264')
+    convert(gif_fp, proc_vid_safari_fp, 'mpeg4')
 
     logging.info('Process outputs - awakeness:{} happiness:{}'.format(
         awakeness,
@@ -106,3 +106,11 @@ def process_video(video_fp, gif_fp, proc_vid_fp):
     ))
 
     return awakeness, happiness
+
+def convert(gif_fp, proc_vid_fp, codec):
+    convert_sh = "/usr/local/bin/ffmpeg -i {} -vcodec {} {} -y".format(
+        gif_fp,
+        codec,
+        proc_vid_fp
+    )
+    os.system(convert_sh)

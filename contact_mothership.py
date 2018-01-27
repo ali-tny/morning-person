@@ -6,13 +6,14 @@ import requests
 from retrying import retry
 
 # Add a dash of exponential backoff
-#@retry(wait_exponential_multiplier=1000, wait_exponential_max=20000,
-       #stop_max_attempt_number=5)
-def upload(process_metrics, song_info, proc_vid_fp, create_endpoint, token):
+@retry(wait_exponential_multiplier=1000, wait_exponential_max=20000,
+       stop_max_attempt_number=5)
+def upload(process_metrics, song_info, proc_vid_fps, create_endpoint, token):
     awakeness, happiness = process_metrics
     song_artist, song_name, song_url = song_info
     logging.info('Uploading to S3')
-    video_url = upload_to_s3(proc_vid_fp)
+    video_c_url = upload_to_s3(proc_vid_fps[0], browser='c')
+    video_s_url = upload_to_s3(proc_vid_fps[1], browser='s')
     logging.info('Uploading to mothership')
     url = create_endpoint
     today = datetime.now()
@@ -22,7 +23,8 @@ def upload(process_metrics, song_info, proc_vid_fp, create_endpoint, token):
         'song_url':song_url,
         'song_name':'{} - {}'.format(song_artist, song_name),
         'date':today.strftime('%Y-%m-%d %H:%M'),
-        'video_url':video_url
+        'video_url':video_c_url,
+        'alt_video_url':video_s_url
     }
     headers = {
         "Authorization":"Token {}".format(token)
@@ -38,9 +40,9 @@ def upload(process_metrics, song_info, proc_vid_fp, create_endpoint, token):
         raise Exception(r.status_code)
     return r
 
-def upload_to_s3(proc_vid_fp):
+def upload_to_s3(proc_vid_fp, browser='c'):
     now = datetime.now()
-    key = now.strftime('%Y/%m/%d-%H-%M-%S')
+    key = now.strftime('%Y/%m/%d-%H-%M-%S_{}.mp4'.format(browser))
     bucket = 'morning-person-images'
     res = boto3.resource('s3')
     data = open(proc_vid_fp, 'rb')
