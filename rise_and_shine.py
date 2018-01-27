@@ -1,21 +1,17 @@
 import argparse
 import logging
 import os
+import sys
 from tunes import get_tune
 from hardware import play_tune, record
 from brain import process_video
 from contact_mothership import upload
 from utils import be_patient
 
-cur_dir = os.path.dirname(__file__)
-log_file = os.path.join(cur_dir, 'script_std.log')
 logging.basicConfig(
     format="%(asctime)s [%(threadName)s] [%(levelname)s] %(message)s",
     level=logging.INFO,
-    handlers=[
-        logging.FileHandler(log_file),
-        logging.StreamHandler(sys.stdout)
-    ]
+    filename=os.path.join(os.path.dirname(__file__), 'daily.log')
 )
 parser = argparse.ArgumentParser(description='Become a better person'\
                                              ' via the medium of dance')
