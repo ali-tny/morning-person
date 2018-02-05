@@ -7,7 +7,7 @@ import imageio
 import moviepy.editor as mpy
 import imutils
 
-def process_video(video_fp, gif_fp, proc_vid_chrome_fp, proc_vid_safari_fp):
+def process_video(video_fp, gif_fp, proc_vid_fp):
     logging.info('Processing...')
     cap = cv2.VideoCapture(video_fp)
     grays = []
@@ -97,8 +97,7 @@ def process_video(video_fp, gif_fp, proc_vid_chrome_fp, proc_vid_safari_fp):
     imageio.mimsave(gif_fp, smaller, fps=np.floor(23 / reduce_factor), 
                     subrectangles=True)
 
-    convert(gif_fp, proc_vid_chrome_fp, 'libx264')
-    convert(gif_fp, proc_vid_safari_fp, 'mpeg4')
+    convert(gif_fp, proc_vid_fp)
 
     logging.info('Process outputs - awakeness:{} happiness:{}'.format(
         awakeness,
@@ -107,10 +106,7 @@ def process_video(video_fp, gif_fp, proc_vid_chrome_fp, proc_vid_safari_fp):
 
     return awakeness, happiness
 
-def convert(gif_fp, proc_vid_fp, codec):
-    convert_sh = "/usr/local/bin/ffmpeg -i {} -vcodec {} {} -y".format(
-        gif_fp,
-        codec,
-        proc_vid_fp
-    )
+def convert(gif_fp, proc_vid_fp):
+    convert_sh = "/usr/local/bin/ffmpeg -i {} -c:v libx264 -pix_fmt yuv420p {}"\
+                 " -y".format(gif_fp, proc_vid_fp)
     os.system(convert_sh)

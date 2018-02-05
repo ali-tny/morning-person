@@ -9,12 +9,12 @@ def play_tune(url):
     os.system(play_song + ' &')
 
 def record():
-    vid_fp, gif_fp, proc_vid_chrome_fp, proc_vid_safari_fp = get_media_paths()
+    vid_fp, gif_fp, proc_vid_fp = get_media_paths()
     func_fp = get_bash_functions_path()
     record = '/bin/bash -c "source {}; video {}"'.format(func_fp, vid_fp)
     logging.info('Recording!')
     os.system(record)
-    return vid_fp, gif_fp, proc_vid_chrome_fp, proc_vid_safari_fp
+    return vid_fp, gif_fp, proc_vid_fp
 
 def get_media_paths():
     today = datetime.now()
@@ -24,13 +24,11 @@ def get_media_paths():
         os.makedirs(media_dir)
     vid_fname = today.strftime("%H-%M.mp4")
     gif_fname = today.strftime("%H-%M.gif")
-    proc_vid_chrome_fname = today.strftime("%H-%M_proc_chrome.mp4")
-    proc_vid_safari_fname = today.strftime("%H-%M_proc_safari.mp4")
+    proc_vid_fname = today.strftime("%H-%M_proc.mp4")
     gif_fp = os.path.join(media_dir, gif_fname)
     vid_fp = os.path.join(media_dir, vid_fname)
-    proc_vid_chrome_fp = os.path.join(media_dir, proc_vid_chrome_fname)
-    proc_vid_safari_fp = os.path.join(media_dir, proc_vid_safari_fname)
-    return vid_fp, gif_fp, proc_vid_chrome_fp, proc_vid_safari_fp
+    proc_vid_fp = os.path.join(media_dir, proc_vid_fname)
+    return vid_fp, gif_fp, proc_vid_fp
 
 def get_bash_functions_path():
     return os.path.join(os.path.dirname(__file__), 'eyes_and_ears.sh')
