@@ -6,7 +6,7 @@ from tunes import get_tune
 from hardware import play_tune, record
 from brain import process_video
 from contact_mothership import upload
-from utils import be_patient
+from utils import be_patient, is_birthday
 
 logging.basicConfig(
     format="%(asctime)s [%(threadName)s] [%(levelname)s] %(message)s",
@@ -31,6 +31,8 @@ if not args.debug:
     play_tune(url)
 
 if not args.debug:
+    # Happy Birthday Lisa song is short, so wait less on bday
+    max_wait = 60 if is_birthday() else 60 * 2.5
     be_patient(min=30, max=60*2.5)
 
 vid_fp, gif_fp, proc_vid_fp = record()

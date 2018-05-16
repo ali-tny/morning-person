@@ -10,6 +10,7 @@ def get_tune(db_path, is_christmas):
     c = db.cursor()
     week_ago = today - timedelta(days=7)
     xmas_filter = '= 1' if is_christmas else 'IS NULL'
+    bday_filter = '= 1' if is_birthday() else 'IS NULL'
     c.execute('''
     SELECT
         url, name, artist_name
@@ -19,9 +20,10 @@ def get_tune(db_path, is_christmas):
         OR last_played_date IS NULL)
         AND retired_date IS NULL
         AND christmas {}
+        AND birthday {}
     ORDER BY RANDOM()
     LIMIT 1;
-    '''.format(week_ago.strftime('%Y-%m-%d'), xmas_filter))
+    '''.format(week_ago.strftime('%Y-%m-%d'), xmas_filter, bday_filter))
     song = c.fetchone()
     song_url = song[0]
     song_name = song[1]
