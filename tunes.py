@@ -1,6 +1,7 @@
 import logging
 from datetime import datetime, timedelta
 import sqlite3 as sql
+from utils import is_birthday
 
 def get_tune(db_path, is_christmas):
     logging.info('Getting song info')
@@ -8,7 +9,7 @@ def get_tune(db_path, is_christmas):
     db = sql.connect(db_path)
     c = db.cursor()
     week_ago = today - timedelta(days=7)
-    xmas_filter = 'AND christmas' if is_christmas else ''
+    xmas_filter = '= 1' if is_christmas else 'IS NULL'
     c.execute('''
     SELECT
         url, name, artist_name
@@ -16,7 +17,8 @@ def get_tune(db_path, is_christmas):
     WHERE
         (DATE(last_played_date) < DATE('{}')
         OR last_played_date IS NULL)
-        {}
+        AND retired_date IS NULL
+        AND christmas {}
     ORDER BY RANDOM()
     LIMIT 1;
     '''.format(week_ago.strftime('%Y-%m-%d'), xmas_filter))
